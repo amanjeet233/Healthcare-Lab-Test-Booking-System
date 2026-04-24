@@ -1,0 +1,156 @@
+/* 
+   SecondaryPages.css
+   Core design system for HealthCareLab premium redesign.
+   Provides glassmorphism tokens and layout utilities.
+*/
+
+:root {
+  --glass-bg: rgba(255, 255, 255, 0.7);
+  --glass-border: rgba(255, 255, 255, 0.4);
+  --glass-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.07);
+  --premium-accent: #0D7C7C;
+  --premium-accent-dark: #0a6666;
+  --ocean-blue: #004B87;
+  --slate-800: #1e293b;
+  --slate-500: #64748b;
+  --slate-400: #94a3b8;
+}
+
+.secondary-page-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 1.5rem 1rem;
+  min-height: calc(100vh - 80px);
+}
+
+.page-header-section {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.75rem;
+  gap: 1rem;
+}
+
+.page-title-area h1 {
+  font-size: clamp(1.6rem, 1.2rem + 1.4vw, 2.2rem);
+  font-weight: 900;
+  color: var(--slate-800);
+  text-transform: uppercase;
+  letter-spacing: -0.025em;
+  margin-bottom: 0.5rem;
+}
+
+.page-title-area p {
+  color: var(--slate-500);
+  font-size: clamp(0.84rem, 0.8rem + 0.2vw, 0.95rem);
+  max-width: 600px;
+}
+
+.glass-card {
+  background: var(--glass-bg);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--glass-shadow);
+  border-radius: 1rem;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow: hidden;
+}
+
+.glass-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 20px 40px -10px rgba(13, 124, 124, 0.15);
+  border-color: rgba(13, 124, 124, 0.2);
+}
+
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+  gap: 0.75rem;
+  align-items: stretch;
+}
+
+.inventory-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 0.9rem;
+}
+
+
+.premium-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.875rem 1.5rem;
+  background: linear-gradient(135deg, var(--premium-accent), var(--ocean-blue));
+  color: white;
+  font-weight: 700;
+  font-size: 0.875rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border-radius: 1rem;
+  transition: all 0.2s;
+  border: none;
+  cursor: pointer;
+}
+
+.premium-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 20px -5px rgba(13, 124, 124, 0.4);
+}
+
+.premium-btn:active {
+  transform: translateY(0);
+}
+
+.status-tag {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.25rem 0.75rem;
+  border-radius: 0.5rem;
+  font-size: 0.75rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.025em;
+}
+
+.status-tag.pending {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.status-tag.completed {
+  background: #d1fae5;
+  color: #065f46;
+}
+
+.status-tag.cancelled {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+/* Base utility for secondary pages */
+.modern-spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid rgba(13, 124, 124, 0.1);
+  border-top: 3px solid var(--premium-accent);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+@media (max-width: 768px) {
+  .page-header-section {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .page-title-area h1 {
+    font-size: 2rem;
+  }
+}

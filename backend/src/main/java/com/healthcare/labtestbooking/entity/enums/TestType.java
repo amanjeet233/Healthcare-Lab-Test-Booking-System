@@ -1,0 +1,62 @@
+package com.healthcare.labtestbooking.entity.enums;
+
+public enum TestType {
+    // Blood Tests
+    HEMATOLOGY,
+    BIOCHEMISTRY,
+    IMMUNOLOGY,
+    MICROBIOLOGY,
+    HORMONES,
+    COAGULATION,
+    TUMOR_MARKERS,
+    CARDIAC_MARKERS,
+    VITAMINS_MINERALS,
+    ALLERGY,
+    AUTOIMMUNE,
+    INFECTIOUS_DISEASE,
+    DIABETES,
+    LIPID_PROFILE,
+    LIVER_FUNCTION,
+    KIDNEY_FUNCTION,
+    THYROID,
+    SEROLOGY,
+    MOLECULAR,
+
+    // Urine Tests
+    URINE,
+    URINE_CHEMISTRY,
+    DRUG_SCREENING,
+
+    // Imaging Tests
+    XRAY,
+    ULTRASOUND,
+    CT_SCAN,
+    MRI,
+    MAMMOGRAPHY,
+    DEXA_SCAN,
+    ECHOCARDIOGRAPHY,
+    DOPPLER,
+    PET_SCAN,
+    FLUOROSCOPY,
+
+    // Specialized Tests
+    GENETIC,
+    PATHOLOGY,
+    CYTOLOGY,
+    HISTOPATHOLOGY,
+    TOXICOLOGY,
+    SLEEP_STUDY,
+    PULMONARY_FUNCTION,
+    CARDIAC_STRESS,
+    ENDOSCOPY,
+    CULTURE,
+    PRENATAL,
+
+    // Wellness & Packages
+    WELLNESS_PACKAGE,
+    HEALTH_CHECKUP,
+    PREVENTIVE_SCREENING,
+
+    // Other
+    OTHER
+}

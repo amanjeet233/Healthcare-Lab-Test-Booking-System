@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 180 180" role="img" aria-label="HealthLab touch icon">
+  <defs>
+    <linearGradient id="a" x1="18" y1="18" x2="162" y2="162" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#0D7C7C"/>
+      <stop offset="1" stop-color="#004B87"/>
+    </linearGradient>
+  </defs>
+  <rect x="8" y="8" width="164" height="164" rx="38" fill="url(#a)"/>
+  <path d="M46 96h22l10-24 16 48 14-24h24" fill="none" stroke="#4ECDC4" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="128" cy="54" r="9" fill="#D4AF37"/>
+</svg>

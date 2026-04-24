@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Professional Medical Laboratory Report Template for Healthcare Lab">
+    <meta property="og:title" content="Professional Medical Laboratory Report Template">
+    <meta property="og:description" content="Professional Medical Laboratory Report Template for Healthcare Lab">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://healthcarelab.com">
+    <title>Professional Medical Laboratory Report Template</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        @media print {
+            body { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+            .no-print { display: none !important; }
+            @page { size: A4; margin: 0; }
+        }
+        .a4-container {
+            width: 210mm;
+            min-height: 297mm;
+            padding: 15mm;
+            margin: auto;
+            background: white;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+        @media print {
+            .a4-container { box-shadow: none; margin: 0; }
+        }
+    </style>
+</head>
+<body class="bg-slate-100 py-10 print:p-0 print:bg-white">
+    <div class="no-print fixed top-5 left-1/2 -translate-x-1/2 z-50">
+        <button class="bg-[#007BFF] text-white px-6 py-2 rounded-full font-bold shadow-lg flex items-center gap-2">
+            Print Test Report
+        </button>
+    </div>
+
+    <div class="a4-container flex flex-col gap-6">
+        <header class="flex justify-between items-start border-b-4 border-[#007BFF] pb-4">
+            <div class="flex gap-4 items-center">
+                <div class="w-16 h-16 bg-[#007BFF]/5 rounded-lg flex items-center justify-center p-2">
+                    <svg class="text-[#007BFF]" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M22 12h-4l-3 9L9 3l-3 9H2"></path>
+                    </svg>
+                </div>
+                <div>
+                    <h1 class="text-3xl font-black text-[#007BFF] tracking-tighter uppercase leading-none">HEALTHCARELAB</h1>
+                    <p class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mt-1">Advanced Diagnostic &amp; Research Centre</p>
+                    <div class="flex gap-2 mt-2">
+                        <span class="text-[9px] px-2 py-0.5 bg-slate-100 rounded-full font-bold text-slate-600 border border-slate-200">NABL ACCREDITED (MC-1024)</span>
+                        <span class="text-[9px] px-2 py-0.5 bg-slate-100 rounded-full font-bold text-slate-600 border border-slate-200">ISO 15189 CERTIFIED</span>
+                    </div>
+                </div>
+            </div>
+            <div class="text-right">
+                <div class="inline-flex items-center gap-2 px-3 py-1 bg-[#007BFF]/10 text-[#007BFF] rounded-full">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                    </svg>
+                    <span class="text-[10px] font-black uppercase tracking-wider">Verified Smart Report</span>
+                </div>
+                <p class="text-[9px] text-slate-400 mt-2 font-medium">Diagnostic Integrity v3.1</p>
+            </div>
+        </header>
+
+        <section class="bg-slate-50 rounded-2xl p-6 border border-slate-100 grid grid-cols-3 gap-y-4">
+            <div class="space-y-1">
+                <p class="text-[9px] font-black text-slate-400 uppercase tracking-[0.2em]">Patient Name</p>
+                <p class="text-sm font-bold text-slate-900">{{PATIENT_NAME}}</p>
+            </div>
+            <div class="space-y-1">
+                <p class="text-[9px] font-black text-slate-400 uppercase tracking-[0.2em]">Age / Gender</p>
+                <p class="text-sm font-bold text-slate-900">{{AGE_GENDER}}</p>
+            </div>
+            <div class="space-y-1 text-right">
+                <p class="text-[9px] font-black text-slate-400 uppercase tracking-[0.2em]">Report ID</p>
+                <p class="text-sm font-bold text-[#007BFF]">{{REPORT_ID}}</p>
+            </div>
+            <div class="space-y-1">
+                <p class="text-[9px] font-black text-slate-400 uppercase tracking-[0.2em]">Sample Collection</p>
+                <p class="text-xs font-medium text-slate-600">{{SAMPLE_COLLECTION_DATE}}</p>
+            </div>
+            <div class="space-y-1">
+                <p class="text-[9px] font-black text-slate-400 uppercase tracking-[0.2em]">Report Generated</p>
+                <p class="text-xs font-medium text-slate-600">{{REPORT_GENERATION_DATE}}</p>
+            </div>
+            <div class="space-y-1 text-right">
+                <p class="text-[9px] font-black text-slate-400 uppercase tracking-[0.2em]">Verification</p>
+                <p class="text-[10px] font-black text-green-600 uppercase flex items-center justify-end gap-1">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                        <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                    </svg>
+                    Digital Seal Active
+                </p>
+            </div>
+        </section>
+
+        <section class="grid grid-cols-3 gap-6">
+            <div class="col-span-1 bg-gradient-to-br from-[#007BFF] to-[#004B87] rounded-2xl p-6 text-white text-center shadow-lg relative overflow-hidden">
+                <div class="relative z-10 flex flex-col items-center">
+                    <p class="text-[9px] font-bold uppercase tracking-[0.3em] opacity-80 mb-2">Overall Vitality</p>
+                    <div class="relative inline-flex items-center justify-center p-2 mb-2">
+                        <svg class="w-20 h-20 -rotate-90">
+                            <circle cx="40" cy="40" r="36" stroke="rgba(255,255,255,0.2)" stroke-width="8" fill="transparent" />
+                            <circle cx="40" cy="40" r="36" stroke="white" stroke-width="8" fill="transparent" stroke-dasharray="226" stroke-dashoffset="{{OVERALL_DASH_OFFSET}}" stroke-linecap="round" />
+                        </svg>
+                        <span class="absolute text-xl font-black">{{OVERALL_SCORE}}%</span>
+                    </div>
+                    <p class="text-[10px] font-medium opacity-70">EXCELLENT RANGE</p>
+                </div>
+            </div>
+            <div class="col-span-2 grid grid-cols-2 gap-4">
+                <div class="bg-slate-50 border border-slate-100 rounded-2xl p-4 flex items-center justify-between">
+                    <div>
+                        <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">Liver Health</p>
+                        <p class="text-2xl font-black text-slate-800">{{LIVER_SCORE}}%</p>
+                    </div>
+                    <div class="w-12 h-12 rounded-full border-4 border-[#14B8A6]/20 border-t-[#14B8A6] flex items-center justify-center">
+                        <svg class="text-[#14B8A6]" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="8" r="7"></circle>
+                            <polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"></polyline>
+                        </svg>
+                    </div>
+                </div>
+                <div class="bg-slate-50 border border-slate-100 rounded-2xl p-4 flex items-center justify-between">
+                    <div>
+                        <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">Metabolism</p>
+                        <p class="text-2xl font-black text-slate-800">{{METABOLISM_SCORE}}%</p>
+                    </div>
+                    <div class="w-12 h-12 rounded-full border-4 border-amber-500/20 border-t-amber-500 flex items-center justify-center">
+                        <svg class="text-amber-500" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M22 12h-4l-3 9L9 3l-3 9H2"></path>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="flex-grow">
+            <table class="w-full border-collapse">
+                <thead>
+                    <tr class="bg-slate-900 text-white">
+                        <th class="text-left py-3 px-4 text-[10px] font-black uppercase tracking-widest rounded-tl-xl">Parameter</th>
+                        <th class="text-center py-3 px-4 text-[10px] font-black uppercase tracking-widest">Result</th>
+                        <th class="text-center py-3 px-4 text-[10px] font-black uppercase tracking-widest">Unit</th>
+                        <th class="text-center py-3 px-4 text-[10px] font-black uppercase tracking-widest">Ref. Range</th>
+                        <th class="text-right py-3 px-4 text-[10px] font-black uppercase tracking-widest rounded-tr-xl">Status</th>
+                    </tr>
+                </thead>
+                <tbody class="text-sm">{{RESULT_ROWS}}</tbody>
+            </table>
+        </section>
+
+        <section class="grid grid-cols-2 gap-6">
+            <div class="bg-blue-50/50 border border-blue-100 rounded-2xl p-5">
+                <h3 class="text-[10px] font-black text-slate-800 uppercase tracking-widest mb-3 flex items-center gap-2">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                    </svg>
+                    Medical Officer Remarks
+                </h3>
+                <p class="text-xs text-slate-600 leading-relaxed italic">{{DOCTOR_REMARKS}}</p>
+            </div>
+            <div class="bg-[#14B8A6]/5 border border-[#14B8A6]/20 rounded-2xl p-5">
+                <h3 class="text-[10px] font-black text-slate-800 uppercase tracking-widest mb-3 flex items-center gap-2">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M22 12h-4l-3 9L9 3l-3 9H2"></path>
+                    </svg>
+                    AI Wellness Insights
+                </h3>
+                <ul class="space-y-1 text-xs text-slate-600">
+                    <li class="flex gap-2"><span>•</span> {{INSIGHT_1}}</li>
+                    <li class="flex gap-2"><span>•</span> {{INSIGHT_2}}</li>
+                </ul>
+            </div>
+        </section>
+
+        <footer class="mt-4 pt-4 border-t border-slate-100 grid grid-cols-3 items-end">
+            <div class="space-y-4">
+                <div class="space-y-1">
+                    <p class="text-[8px] font-black text-slate-400 uppercase tracking-widest">Digital Fingerprint</p>
+                    <div class="p-2 bg-slate-50 rounded-lg border border-slate-100">
+                        <code class="text-[7px] text-[#007BFF] break-all font-mono">{{DIGITAL_FINGERPRINT}}</code>
+                    </div>
+                </div>
+            </div>
+            <div class="flex flex-col items-center">
+                <div class="p-2 border border-slate-100 rounded-xl shadow-sm mb-2">
+                    <svg width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="text-slate-800">
+                        <rect x="3" y="3" width="7" height="7"></rect>
+                        <rect x="14" y="3" width="7" height="7"></rect>
+                        <rect x="14" y="14" width="7" height="7"></rect>
+                        <rect x="3" y="14" width="7" height="7"></rect>
+                        <line x1="7" y1="7" x2="7.01" y2="7"></line>
+                        <line x1="17" y1="7" x2="17.01" y2="7"></line>
+                        <line x1="17" y1="17" x2="17.01" y2="17"></line>
+                        <line x1="7" y1="17" x2="7.01" y2="17"></line>
+                    </svg>
+                </div>
+                <p class="text-[9px] font-bold text-slate-500 uppercase">Verify Online</p>
+            </div>
+            <div class="text-right">
+                <div class="inline-block border-b border-slate-300 w-32 h-10 italic text-slate-300 text-xs">Digital Signature</div>
+                <p class="text-[10px] font-bold text-slate-800 mt-2">{{DOCTOR_NAME}}</p>
+                <p class="text-[8px] font-black text-slate-400 uppercase">Consultant Pathologist</p>
+            </div>
+        </footer>
+
+        <div class="mt-8 flex justify-between items-center text-[8px] text-slate-300 font-bold uppercase tracking-[0.4em]">
+            <span>ISO 15189 CERTIFIED</span>
+            <span>ICMR APPROVED</span>
+            <span>NABL ACCREDITED</span>
+        </div>
+    </div>
+</body>
+</html>
+

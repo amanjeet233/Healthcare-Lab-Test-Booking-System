@@ -1,0 +1,1230 @@
+{
+    "info": {
+        "name": "Healthcare Lab Booking API - Complete Test Suite",
+        "description": "Full backend API testing with 38 test cases covering Authentication, Profiles, Lab Tests, Bookings, Doctor Operations, Technician Operations, Performance, and Security.",
+        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+    },
+    "item": [
+        {
+            "name": "1. AUTHENTICATION TESTS",
+            "item": [
+                {
+                    "name": "TC-01: Register Patient - Success",
+                    "event": [
+                        {
+                            "listen": "prerequest",
+                            "script": {
+                                "exec": [
+                                    "const timestamp = Date.now();",
+                                    "pm.environment.set(\"patient_email\", \"patient_\" + timestamp + \"@test.com\");",
+                                    "pm.environment.set(\"patient_phone\", \"98765\" + (timestamp % 100000));"
+                                ]
+                            }
+                        },
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test(\"Status 201 Created\", () => pm.response.to.have.status(201));",
+                                    "pm.test(\"Response has success true\", () => {",
+                                    "  const json = pm.response.json();",
+                                    "  pm.expect(json.success).to.eql(true);",
+                                    "  pm.expect(json.data.accessToken).to.not.be.empty;",
+                                    "});"
+                                ]
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "POST",
+                        "url": "{{base_url}}/api/auth/register",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"name\": \"Test Patient\",\n  \"email\": \"{{patient_email}}\",\n  \"password\": \"Password@123\",\n  \"phone\": \"{{patient_phone}}\",\n  \"role\": \"PATIENT\",\n  \"address\": \"123 Test Street\",\n  \"dateOfBirth\": \"1990-01-01\",\n  \"gender\": \"MALE\",\n  \"bloodGroup\": \"O+\"\n}"
+                        }
+                    }
+                },
+                {
+                    "name": "TC-02: Register Doctor - Success",
+                    "event": [
+                        {
+                            "listen": "prerequest",
+                            "script": {
+                                "exec": [
+                                    "const timestamp = Date.now();",
+                                    "pm.environment.set(\"doctor_email\", \"doctor_\" + timestamp + \"@test.com\");",
+                                    "pm.environment.set(\"doctor_phone\", \"98765\" + ((timestamp + 1000) % 100000));"
+                                ]
+                            }
+                        },
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test(\"Status 201 Created\", () => pm.response.to.have.status(201));",
+                                    "const json = pm.response.json();",
+                                    "pm.environment.set(\"doctor_id\", json.data.userId);"
+                                ]
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "POST",
+                        "url": "{{base_url}}/api/auth/register",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"name\": \"Test Doctor\",\n  \"email\": \"{{doctor_email}}\",\n  \"password\": \"Password@123\",\n  \"phone\": \"{{doctor_phone}}\",\n  \"role\": \"MEDICAL_OFFICER\",\n  \"address\": \"456 Clinic Road\",\n  \"dateOfBirth\": \"1985-05-15\",\n  \"gender\": \"MALE\",\n  \"bloodGroup\": \"B+\"\n}"
+                        }
+                    }
+                },
+                {
+                    "name": "TC-03: Register Technician - Success",
+                    "event": [
+                        {
+                            "listen": "prerequest",
+                            "script": {
+                                "exec": [
+                                    "const timestamp = Date.now();",
+                                    "pm.environment.set(\"tech_email\", \"tech_\" + timestamp + \"@test.com\");",
+                                    "pm.environment.set(\"tech_phone\", \"98765\" + ((timestamp + 2000) % 100000));"
+                                ]
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "POST",
+                        "url": "{{base_url}}/api/auth/register",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"name\": \"Test Technician\",\n  \"email\": \"{{tech_email}}\",\n  \"password\": \"Password@123\",\n  \"phone\": \"{{tech_phone}}\",\n  \"role\": \"TECHNICIAN\"\n}"
+                        }
+                    }
+                },
+                {
+                    "name": "TC-04: Login Patient - Success",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test(\"Status 200 OK\", () => pm.response.to.have.status(200));",
+                                    "const json = pm.response.json();",
+                                    "pm.environment.set(\"patient_token\", json.data.accessToken);",
+                                    "pm.test(\"Token received\", () => pm.expect(json.data.accessToken).to.not.be.empty);"
+                                ]
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "POST",
+                        "url": "{{base_url}}/api/auth/login",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"email\": \"{{patient_email}}\",\n  \"password\": \"Password@123\"\n}"
+                        }
+                    }
+                },
+                {
+                    "name": "TC-05: Login Doctor - Success",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test(\"Status 200 OK\", () => pm.response.to.have.status(200));",
+                                    "const json = pm.response.json();",
+                                    "pm.environment.set(\"doctor_token\", json.data.accessToken);"
+                                ]
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "POST",
+                        "url": "{{base_url}}/api/auth/login",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"email\": \"{{doctor_email}}\",\n  \"password\": \"Password@123\"\n}"
+                        }
+                    }
+                },
+                {
+                    "name": "TC-06: Login Technician - Success",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test(\"Status 200 OK\", () => pm.response.to.have.status(200));",
+                                    "const json = pm.response.json();",
+                                    "pm.environment.set(\"technician_token\", json.data.accessToken);"
+                                ]
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "POST",
+                        "url": "{{base_url}}/api/auth/login",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"email\": \"{{tech_email}}\",\n  \"password\": \"Password@123\"\n}"
+                        }
+                    }
+                },
+                {
+                    "name": "TC-07: Negative - Duplicate Registration",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test(\"Status 409 Conflict\", () => pm.response.to.have.status(409));",
+                                    "pm.test(\"Error message indicates duplicate\", () => {",
+                                    "  const json = pm.response.json();",
+                                    "  pm.expect(json.message).to.include(\"already\");",
+                                    "});"
+                                ]
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "POST",
+                        "url": "{{base_url}}/api/auth/register",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"name\": \"Test Patient\",\n  \"email\": \"{{patient_email}}\",\n  \"password\": \"Password@123\",\n  \"phone\": \"9999999999\",\n  \"role\": \"PATIENT\"\n}"
+                        }
+                    }
+                },
+                {
+                    "name": "TC-08: Negative - Wrong Password",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test(\"Status 401 Unauthorized\", () => pm.response.to.have.status(401));"
+                                ]
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "POST",
+                        "url": "{{base_url}}/api/auth/login",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"email\": \"{{patient_email}}\",\n  \"password\": \"WrongPassword123\"\n}"
+                        }
+                    }
+                },
+                {
+                    "name": "TC-09: Negative - Invalid Email Format",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test(\"Status 400 Bad Request\", () => pm.response.to.have.status(400));"
+                                ]
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "POST",
+                        "url": "{{base_url}}/api/auth/register",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"name\": \"Test\",\n  \"email\": \"invalid-email\",\n  \"password\": \"Password@123\",\n  \"phone\": \"9876543210\",\n  \"role\": \"PATIENT\"\n}"
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "name": "2. PROFILE TESTS",
+            "item": [
+                {
+                    "name": "TC-10: Get Patient Profile",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test(\"Status 200 OK\", () => pm.response.to.have.status(200));",
+                                    "const json = pm.response.json();",
+                                    "pm.test(\"Role is PATIENT\", () => pm.expect(json.data.role).to.equal(\"PATIENT\"));"
+                                ]
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "GET",
+                        "url": "{{base_url}}/api/users/profile",
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{patient_token}}"
+                                }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "TC-11: Get Doctor Profile",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test(\"Status 200 OK\", () => pm.response.to.have.status(200));",
+                                    "pm.test(\"Role is MEDICAL_OFFICER\", () => {",
+                                    "  const json = pm.response.json();",
+                                    "  pm.expect(json.data.role).to.equal(\"MEDICAL_OFFICER\");",
+                                    "});"
+                                ]
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "GET",
+                        "url": "{{base_url}}/api/users/profile",
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{doctor_token}}"
+                                }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "TC-12: Get Technician Profile",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test(\"Status 200 OK\", () => pm.response.to.have.status(200));",
+                                    "pm.test(\"Role is TECHNICIAN\", () => {",
+                                    "  const json = pm.response.json();",
+                                    "  pm.expect(json.data.role).to.equal(\"TECHNICIAN\");",
+                                    "});"
+                                ]
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "GET",
+                        "url": "{{base_url}}/api/users/profile",
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{technician_token}}"
+                                }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "TC-13: Negative - No Token",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test(\"Status 401 Unauthorized\", () => pm.response.to.have.status(401));"
+                                ]
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "GET",
+                        "url": "{{base_url}}/api/users/profile"
+                    }
+                },
+                {
+                    "name": "TC-14: Negative - Expired Token",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test(\"Status 401 Unauthorized\", () => pm.response.to.have.status(401));"
+                                ]
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "GET",
+                        "url": "{{base_url}}/api/users/profile",
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "expired.jwt.token"
+                                }
+                            ]
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "name": "3. LAB TESTS",
+            "item": [
+                {
+                    "name": "TC-15: Get All Lab Tests",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test(\"Status 200 OK\", () => pm.response.to.have.status(200));",
+                                    "const json = pm.response.json();",
+                                    "pm.test(\"Returns array of tests\", () => {",
+                                    "  pm.expect(json.data.content).to.be.an('array');",
+                                    "  if(json.data.content.length > 0) {",
+                                    "    pm.environment.set(\"test_id\", json.data.content[0].id);",
+                                    "  }",
+                                    "});"
+                                ]
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "GET",
+                        "url": "{{base_url}}/api/lab-tests"
+                    }
+                },
+                {
+                    "name": "TC-16: Get Test By ID",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test(\"Status 200 OK\", () => pm.response.to.have.status(200));",
+                                    "const json = pm.response.json();",
+                                    "pm.test(\"Returns correct test\", () => {",
+                                    "  pm.expect(json.data.id).to.equal(parseInt(pm.environment.get(\"test_id\")));",
+                                    "});"
+                                ]
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "GET",
+                        "url": "{{base_url}}/api/lab-tests/{{test_id}}"
+                    }
+                },
+                {
+                    "name": "TC-17: Negative - Test Not Found",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test(\"Status 404 Not Found\", () => pm.response.to.have.status(404));"
+                                ]
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "GET",
+                        "url": "{{base_url}}/api/lab-tests/99999"
+                    }
+                },
+                {
+                    "name": "TC-18: Search Tests by Name",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test(\"Status 200 OK\", () => pm.response.to.have.status(200));"
+                                ]
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "GET",
+                        "url": "{{base_url}}/api/lab-tests?search=blood"
+                    }
+                },
+                {
+                    "name": "TC-19: Filter Tests by Category",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test(\"Status 200 OK\", () => pm.response.to.have.status(200));"
+                                ]
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "GET",
+                        "url": "{{base_url}}/api/lab-tests?category=1"
+                    }
+                }
+            ]
+        },
+        {
+            "name": "4. BOOKING TESTS",
+            "item": [
+                {
+                    "name": "TC-20: Create Booking - LAB Collection",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test(\"Status 201 Created\", () => pm.response.to.have.status(201));",
+                                    "const json = pm.response.json();",
+                                    "pm.environment.set(\"booking_id\", json.data.id);",
+                                    "pm.environment.set(\"booking_ref\", json.data.bookingReference);",
+                                    "pm.test(\"Booking created with PENDING status\", () => {",
+                                    "  pm.expect(json.data.status).to.equal(\"PENDING\");",
+                                    "});"
+                                ]
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "POST",
+                        "url": "{{base_url}}/api/bookings",
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{patient_token}}"
+                                }
+                            ]
+                        },
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"testId\": {{test_id}},\n  \"bookingDate\": \"{{$isoTimestamp}}\",\n  \"timeSlot\": \"10:00 AM\",\n  \"collectionType\": \"LAB\",\n  \"collectionAddress\": \"Lab Address\"\n}"
+                        }
+                    }
+                },
+                {
+                    "name": "TC-21: Create Booking - HOME Collection",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test(\"Status 201 Created\", () => pm.response.to.have.status(201));",
+                                    "const json = pm.response.json();",
+                                    "pm.environment.set(\"home_booking_id\", json.data.id);"
+                                ]
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "POST",
+                        "url": "{{base_url}}/api/bookings",
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{patient_token}}"
+                                }
+                            ]
+                        },
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"testId\": {{test_id}},\n  \"bookingDate\": \"{{$isoTimestamp}}\",\n  \"timeSlot\": \"11:00 AM\",\n  \"collectionType\": \"HOME\",\n  \"collectionAddress\": \"123 Home Street, City\"\n}"
+                        }
+                    }
+                },
+                {
+                    "name": "TC-22: Get My Bookings",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test(\"Status 200 OK\", () => pm.response.to.have.status(200));",
+                                    "const json = pm.response.json();",
+                                    "pm.test(\"Returns array of bookings\", () => {",
+                                    "  pm.expect(json.data).to.be.an('array');",
+                                    "});"
+                                ]
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "GET",
+                        "url": "{{base_url}}/api/bookings/my",
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{patient_token}}"
+                                }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "TC-23: Get Booking By ID",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test(\"Status 200 OK\", () => pm.response.to.have.status(200));",
+                                    "const json = pm.response.json();",
+                                    "pm.test(\"Returns correct booking\", () => {",
+                                    "  pm.expect(json.data.id).to.equal(parseInt(pm.environment.get(\"booking_id\")));",
+                                    "});"
+                                ]
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "GET",
+                        "url": "{{base_url}}/api/bookings/{{booking_id}}",
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{patient_token}}"
+                                }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "TC-24: Cancel Booking",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test(\"Status 200 OK\", () => pm.response.to.have.status(200));",
+                                    "const json = pm.response.json();",
+                                    "pm.test(\"Booking status changed to CANCELLED\", () => {",
+                                    "  pm.expect(json.data.status).to.equal(\"CANCELLED\");",
+                                    "});"
+                                ]
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "PUT",
+                        "url": "{{base_url}}/api/bookings/{{booking_id}}/cancel",
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{patient_token}}"
+                                }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "TC-25: Negative - Cancel Non-existent Booking",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test(\"Status 404 Not Found\", () => pm.response.to.have.status(404));"
+                                ]
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "PUT",
+                        "url": "{{base_url}}/api/bookings/99999/cancel",
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{patient_token}}"
+                                }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "TC-26: Negative - Create Booking Past Date",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test(\"Status 400 Bad Request\", () => pm.response.to.have.status(400));"
+                                ]
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "POST",
+                        "url": "{{base_url}}/api/bookings",
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{patient_token}}"
+                                }
+                            ]
+                        },
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"testId\": {{test_id}},\n  \"bookingDate\": \"2020-01-01\",\n  \"timeSlot\": \"10:00 AM\",\n  \"collectionType\": \"LAB\"\n}"
+                        }
+                    }
+                },
+                {
+                    "name": "TC-27: Negative - Create Booking Invalid Test",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test(\"Status 404 Not Found\", () => pm.response.to.have.status(404));"
+                                ]
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "POST",
+                        "url": "{{base_url}}/api/bookings",
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{patient_token}}"
+                                }
+                            ]
+                        },
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"testId\": 99999,\n  \"bookingDate\": \"{{$isoTimestamp}}\",\n  \"timeSlot\": \"10:00 AM\",\n  \"collectionType\": \"LAB\"\n}"
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "name": "5. DOCTOR OPERATIONS",
+            "item": [
+                {
+                    "name": "TC-28: Get Pending Bookings",
+                    "event": [
+                        {
+                            "listen": "prerequest",
+                            "script": {
+                                "exec": [
+                                    "const baseUrl = pm.environment.get(\"base_url\");",
+                                    "const patientToken = pm.environment.get(\"patient_token\");",
+                                    "pm.sendRequest({",
+                                    "  url: baseUrl + \"/api/bookings\",",
+                                    "  method: 'POST',",
+                                    "  header: {'Authorization': 'Bearer ' + patientToken, 'Content-Type': 'application/json'},",
+                                    "  body: {mode: 'raw', raw: JSON.stringify({testId: 1, bookingDate: new Date().toISOString().split('T')[0], timeSlot: '02:00 PM', collectionType: 'LAB'})}",
+                                    "});"
+                                ]
+                            }
+                        },
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test(\"Status 200 OK\", () => pm.response.to.have.status(200));"
+                                ]
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "GET",
+                        "url": "{{base_url}}/api/mo/pending",
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{doctor_token}}"
+                                }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "TC-29: Confirm Booking",
+                    "event": [
+                        {
+                            "listen": "prerequest",
+                            "script": {
+                                "exec": [
+                                    "const baseUrl = pm.environment.get(\"base_url\");",
+                                    "const patientToken = pm.environment.get(\"patient_token\");",
+                                    "pm.sendRequest({",
+                                    "  url: baseUrl + \"/api/bookings\",",
+                                    "  method: 'POST',",
+                                    "  header: {'Authorization': 'Bearer ' + patientToken, 'Content-Type': 'application/json'},",
+                                    "  body: {mode: 'raw', raw: JSON.stringify({testId: 1, bookingDate: new Date().toISOString().split('T')[0], timeSlot: '03:00 PM', collectionType: 'LAB'})}",
+                                    "}, function(err, res) {",
+                                    "  if(!err && res.code === 201) {",
+                                    "    let jsonData = res.json();",
+                                    "    pm.environment.set(\"doctor_booking_id\", jsonData.data.id);",
+                                    "  }",
+                                    "});"
+                                ]
+                            }
+                        },
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test(\"Status 200 OK\", () => pm.response.to.have.status(200));",
+                                    "const json = pm.response.json();",
+                                    "pm.test(\"Status changed to CONFIRMED\", () => {",
+                                    "  pm.expect(json.data.status).to.equal(\"CONFIRMED\");",
+                                    "});"
+                                ]
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "PUT",
+                        "url": "{{base_url}}/api/bookings/{{doctor_booking_id}}/status?status=CONFIRMED",
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{doctor_token}}"
+                                }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "TC-30: Reject Booking",
+                    "event": [
+                        {
+                            "listen": "prerequest",
+                            "script": {
+                                "exec": [
+                                    "const baseUrl = pm.environment.get(\"base_url\");",
+                                    "const patientToken = pm.environment.get(\"patient_token\");",
+                                    "pm.sendRequest({",
+                                    "  url: baseUrl + \"/api/bookings\",",
+                                    "  method: 'POST',",
+                                    "  header: {'Authorization': 'Bearer ' + patientToken, 'Content-Type': 'application/json'},",
+                                    "  body: {mode: 'raw', raw: JSON.stringify({testId: 1, bookingDate: new Date().toISOString().split('T')[0], timeSlot: '04:00 PM', collectionType: 'LAB'})}",
+                                    "}, function(err, res) {",
+                                    "  if(!err && res.code === 201) {",
+                                    "    let jsonData = res.json();",
+                                    "    pm.environment.set(\"reject_booking_id\", jsonData.data.id);",
+                                    "  }",
+                                    "});"
+                                ]
+                            }
+                        },
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test(\"Status 200 OK\", () => pm.response.to.have.status(200));",
+                                    "const json = pm.response.json();",
+                                    "pm.test(\"Status changed to CANCELLED\", () => {",
+                                    "  pm.expect(json.data.status).to.equal(\"CANCELLED\");",
+                                    "});"
+                                ]
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "PUT",
+                        "url": "{{base_url}}/api/bookings/{{reject_booking_id}}/status?status=CANCELLED",
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{doctor_token}}"
+                                }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "TC-31: Negative - Confirm Already Cancelled",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test(\"Status 400 Bad Request\", () => pm.response.to.have.status(400));"
+                                ]
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "PUT",
+                        "url": "{{base_url}}/api/bookings/{{reject_booking_id}}/status?status=CONFIRMED",
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{doctor_token}}"
+                                }
+                            ]
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "name": "6. TECHNICIAN OPERATIONS",
+            "item": [
+                {
+                    "name": "TC-32: Get Assigned Collections",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test(\"Status 200 OK\", () => pm.response.to.have.status(200));"
+                                ]
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "GET",
+                        "url": "{{base_url}}/api/bookings/technician",
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{technician_token}}"
+                                }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "TC-33: Mark Sample Collected",
+                    "event": [
+                        {
+                            "listen": "prerequest",
+                            "script": {
+                                "exec": [
+                                    "const baseUrl = pm.environment.get(\"base_url\");",
+                                    "const patientToken = pm.environment.get(\"patient_token\");",
+                                    "const doctorToken = pm.environment.get(\"doctor_token\");",
+                                    "pm.sendRequest({",
+                                    "  url: baseUrl + \"/api/bookings\",",
+                                    "  method: 'POST',",
+                                    "  header: {'Authorization': 'Bearer ' + patientToken, 'Content-Type': 'application/json'},",
+                                    "  body: {mode: 'raw', raw: JSON.stringify({testId: 1, bookingDate: new Date().toISOString().split('T')[0], timeSlot: '05:00 PM', collectionType: 'HOME', collectionAddress: 'Test Address'})}",
+                                    "}, function(err, res) {",
+                                    "  if(!err && res.code === 201) {",
+                                    "    let jsonData = res.json();",
+                                    "    let bookingId = jsonData.data.id;",
+                                    "    pm.sendRequest({",
+                                    "      url: baseUrl + \"/api/bookings/\" + bookingId + \"/status?status=CONFIRMED\",",
+                                    "      method: 'PUT',",
+                                    "      header: {'Authorization': 'Bearer ' + doctorToken}",
+                                    "    }, function(err2, res2) {",
+                                    "      if(!err2 && res2.code === 200) {",
+                                    "        pm.environment.set(\"tech_booking_id\", bookingId);",
+                                    "      }",
+                                    "    });",
+                                    "  }",
+                                    "});"
+                                ]
+                            }
+                        },
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test(\"Status 200 OK\", () => pm.response.to.have.status(200));",
+                                    "const json = pm.response.json();",
+                                    "pm.test(\"Status changed to SAMPLE_COLLECTED\", () => {",
+                                    "  pm.expect(json.data.status).to.equal(\"SAMPLE_COLLECTED\");",
+                                    "});"
+                                ]
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "PUT",
+                        "url": "{{base_url}}/api/bookings/{{tech_booking_id}}/status?status=SAMPLE_COLLECTED",
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{technician_token}}"
+                                }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "TC-34: Negative - Mark Without Confirmation",
+                    "event": [
+                        {
+                            "listen": "prerequest",
+                            "script": {
+                                "exec": [
+                                    "const baseUrl = pm.environment.get(\"base_url\");",
+                                    "const patientToken = pm.environment.get(\"patient_token\");",
+                                    "pm.sendRequest({",
+                                    "  url: baseUrl + \"/api/bookings\",",
+                                    "  method: 'POST',",
+                                    "  header: {'Authorization': 'Bearer ' + patientToken, 'Content-Type': 'application/json'},",
+                                    "  body: {mode: 'raw', raw: JSON.stringify({testId: 1, bookingDate: new Date().toISOString().split('T')[0], timeSlot: '06:00 PM', collectionType: 'LAB'})}",
+                                    "}, function(err, res) {",
+                                    "  if(!err && res.code === 201) {",
+                                    "    let jsonData = res.json();",
+                                    "    pm.environment.set(\"pending_booking_id\", jsonData.data.id);",
+                                    "  }",
+                                    "});"
+                                ]
+                            }
+                        },
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test(\"Status 400 Bad Request\", () => pm.response.to.have.status(400));"
+                                ]
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "PUT",
+                        "url": "{{base_url}}/api/bookings/{{pending_booking_id}}/status?status=SAMPLE_COLLECTED",
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{technician_token}}"
+                                }
+                            ]
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "name": "7. PERFORMANCE TESTS",
+            "item": [
+                {
+                    "name": "TC-35: Response Time - Login",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test(\"Response time < 500ms\", () => {",
+                                    "  pm.expect(pm.response.responseTime).to.be.below(500);",
+                                    "});"
+                                ]
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "POST",
+                        "url": "{{base_url}}/api/auth/login",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"email\": \"{{patient_email}}\",\n  \"password\": \"Password@123\"\n}"
+                        }
+                    }
+                },
+                {
+                    "name": "TC-36: Response Time - Get Tests",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test(\"Response time < 300ms\", () => {",
+                                    "  pm.expect(pm.response.responseTime).to.be.below(300);",
+                                    "});"
+                                ]
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "GET",
+                        "url": "{{base_url}}/api/lab-tests"
+                    }
+                }
+            ]
+        },
+        {
+            "name": "8. SECURITY TESTS",
+            "item": [
+                {
+                    "name": "TC-37: SQL Injection Attempt",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test(\"Status 400 or 401\", () => {",
+                                    "  pm.expect(pm.response.code).to.be.oneOf([400, 401, 403]);",
+                                    "});"
+                                ]
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "POST",
+                        "url": "{{base_url}}/api/auth/login",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"email\": \"' OR '1'='1\",\n  \"password\": \"' OR '1'='1\"\n}"
+                        }
+                    }
+                },
+                {
+                    "name": "TC-38: XSS Attempt",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test(\"Status 400\", () => pm.response.to.have.status(400));"
+                                ]
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "POST",
+                        "url": "{{base_url}}/api/auth/register",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"name\": \"<script>alert('XSS')</script>\",\n  \"email\": \"xss@test.com\",\n  \"password\": \"Password@123\",\n  \"phone\": \"9876543210\",\n  \"role\": \"PATIENT\"\n}"
+                        }
+                    }
+                }
+            ]
+        }
+    ]
+}

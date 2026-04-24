@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="HealthLab PWA icon 512">
+  <defs>
+    <linearGradient id="g512" x1="52" y1="52" x2="460" y2="460" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#0D7C7C"/>
+      <stop offset="1" stop-color="#004B87"/>
+    </linearGradient>
+  </defs>
+  <rect x="24" y="24" width="464" height="464" rx="108" fill="url(#g512)"/>
+  <path d="M130 270h62l28-70 44 140 38-70h80" fill="none" stroke="#4ECDC4" stroke-width="32" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="368" cy="156" r="24" fill="#D4AF37"/>
+</svg>

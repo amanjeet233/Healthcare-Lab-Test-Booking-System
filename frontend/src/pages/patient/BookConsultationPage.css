@@ -1,0 +1,38 @@
+/* ✅ BOOK CONSULTATION PAGE STYLES */
+
+.consultation-page {
+  min-height: 100vh;
+  background: #F0F9F9;
+  padding: 48px 20px;
+  
+}
+
+.consultation-container {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* ✅ ANIMATIONS */
+@keyframes pageSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ✅ RESPONSIVE */
+@media (max-width: 768px) {
+  .consultation-page {
+    padding: 32px 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  .consultation-page {
+    padding: 24px 16px;
+  }
+}

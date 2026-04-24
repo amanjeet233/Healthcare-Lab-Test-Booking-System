@@ -1,0 +1,3 @@
+ALTER TABLE bookings
+    ADD COLUMN IF NOT EXISTS rejection_reason VARCHAR(255),
+    ADD COLUMN IF NOT EXISTS rejected_at TIMESTAMP;

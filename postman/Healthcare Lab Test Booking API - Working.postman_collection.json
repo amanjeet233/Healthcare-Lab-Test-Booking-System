@@ -1,0 +1,1120 @@
+{
+	"info": {
+		"name": "🏥 Healthcare Lab - Enterprise API Suite",
+		"description": "## 🌟 Premium REST API Collection\n\nA comprehensive, production-ready Postman collection for the Healthcare Lab Test Booking System.\n\n### 📋 Features\n- ✅ **50+ API Endpoints** covering all functionalities\n- ✅ **Auto-Authentication** with JWT token management\n- ✅ **Environment Variables** for seamless testing\n- ✅ **Test Scripts** for automatic validation\n- ✅ **Pre-request Scripts** for dynamic data\n- ✅ **Detailed Documentation** for each endpoint\n\n### 🔧 Setup Instructions\n1. Import this collection into Postman\n2. Import the `Healthcare Local.postman_environment.json` environment\n3. Select the \"Healthcare Local\" environment\n4. Run requests in order (Auth → Catalog → Bookings → Reports)\n\n### 👤 Maintained By\n**AMANJEET KUMAR** (@amanjeet233)\n- Instagram: https://instagram.com/amanjeet233\n- GitHub: https://github.com/amanjeet233\n\n### 📌 Version\n**v2.0.0** - Last Updated: April 2024\n\n### 🎯 Target Environment\n- Local: http://localhost:8080\n- Production: https://api.healthcarelab.com",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "🔐 Auth & Identity",
+			"description": "Authentication and user management endpoints. Includes registration, login, profile management, and role-based access.",
+			"item": [
+				{
+					"name": "User Registration",
+					"description": "Register a new user in the system. Supports all user roles: PATIENT, TECHNICIAN, MEDICAL_OFFICER, ADMIN.\n\n**Required Fields:**\n- name: Full name of the user\n- email: Unique email address\n- password: Minimum 8 characters\n- phone: 10-digit phone number\n- gender: MALE, FEMALE, or OTHER\n- age: Age in years\n- address: Residential address\n- dateOfBirth: YYYY-MM-DD format\n- role: PATIENT, TECHNICIAN, MEDICAL_OFFICER, or ADMIN\n\n**Response:** Returns user ID, email, and role on success.",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": "Content-Type header for JSON payload"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"{{user_name}}\",\n  \"email\": \"{{patient_email}}\",\n  \"password\": \"{{patient_password}}\",\n  \"phone\": \"{{user_phone}}\",\n  \"gender\": \"MALE\",\n  \"age\": 25,\n  \"address\": \"New Delhi, India\",\n  \"dateOfBirth\": \"1999-01-01\",\n  \"role\": \"PATIENT\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/api/auth/register",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Patient Login",
+					"description": "Authenticate a user and receive JWT access token.\n\n**Required Fields:**\n- email: Registered email address\n- password: User password\n\n**Response:** Returns accessToken, refreshToken, userId, and user role.\n\n**Auto-Sets:**\n- patient_token: JWT access token for subsequent requests\n- patient_id: User ID for profile operations",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"pm.test(\"Response has success field\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.have.property('success');",
+									"});",
+									"const jsonData = pm.response.json();",
+									"if (jsonData.success && jsonData.data.accessToken) {",
+									"    pm.environment.set(\"patient_token\", jsonData.data.accessToken);",
+									"    pm.environment.set(\"patient_id\", jsonData.data.userId);",
+									"    console.log('Token saved successfully');",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"{{patient_email}}\",\n  \"password\": \"{{patient_password}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/api/auth/login",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Technician Login",
+					"description": "Authenticate a technician user.\n\n**Auto-Sets:**\n- technician_token: JWT access token for technician operations",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const jsonData = pm.response.json();",
+									"if (jsonData.success && jsonData.data.accessToken) {",
+									"    pm.environment.set(\"technician_token\", jsonData.data.accessToken);",
+									"    pm.environment.set(\"technician_id\", jsonData.data.userId);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"{{technician_email}}\",\n  \"password\": \"{{patient_password}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/api/auth/login",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Doctor Login",
+					"description": "Authenticate a medical officer.\n\n**Auto-Sets:**\n- doctor_token: JWT access token for medical officer operations",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const jsonData = pm.response.json();",
+									"if (jsonData.success && jsonData.data.accessToken) {",
+									"    pm.environment.set(\"doctor_token\", jsonData.data.accessToken);",
+									"    pm.environment.set(\"doctor_id\", jsonData.data.userId);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"{{doctor_email}}\",\n  \"password\": \"{{patient_password}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/api/auth/login",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Profile Info",
+					"description": "Retrieve the authenticated user's profile information.\n\n**Headers:**\n- Authorization: Bearer {{patient_token}}\n\n**Response:** Returns user profile including name, email, phone, address, and role.",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{patient_token}}",
+								"description": "JWT access token"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/users/profile",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"users",
+								"profile"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Profile",
+					"description": "Update the authenticated user's profile information.\n\n**Headers:**\n- Authorization: Bearer {{patient_token}}\n\n**Body:** Fields to update (name, phone, address, etc.)",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{patient_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Updated Name\",\n  \"phone\": \"9876543210\",\n  \"address\": \"New Address\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/api/users/profile",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"users",
+								"profile"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Logout",
+					"description": "Logout the current user and invalidate the token.\n\n**Headers:**\n- Authorization: Bearer {{patient_token}}",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{patient_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/auth/logout",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"logout"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "🧪 Catalog & Search",
+			"description": "Lab test catalog management, search, filtering, and categorization endpoints.",
+			"item": [
+				{
+					"name": "Get Popular Tests",
+					"description": "Retrieve the most popular lab tests based on booking count and views.\n\n**Response:** Returns list of popular tests with test_code, name, price, and category.\n\n**Use Case:** Display trending tests on homepage.",
+					"request": {
+						"method": "GET",
+						"url": {
+							"raw": "{{base_url}}/api/lab-tests/popular",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"lab-tests",
+								"popular"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Tests (Paginated)",
+					"description": "Retrieve all lab tests with pagination support.\n\n**Query Parameters:**\n- page: Page number (default: 0)\n- size: Items per page (default: 10)\n- sort: Sort field (default: id)\n\n**Response:** Paginated list of lab tests.",
+					"request": {
+						"method": "GET",
+						"url": {
+							"raw": "{{base_url}}/api/lab-tests?page=0&size=10&sort=test_name",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"lab-tests"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "0"
+								},
+								{
+									"key": "size",
+									"value": "10"
+								},
+								{
+									"key": "sort",
+									"value": "test_name"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Advanced Filter & Search",
+					"description": "Advanced search with multiple filters.\n\n**Query Parameters:**\n- search: Search term (searches in test name, code)\n- category: Filter by category (e.g., Blood Studies, Hormone)\n- min_price: Minimum price filter\n- max_price: Maximum price filter\n\n**Response:** Filtered list of lab tests matching criteria.",
+					"request": {
+						"method": "GET",
+						"url": {
+							"raw": "{{base_url}}/api/lab-tests/advanced?search=Blood&category=Blood Studies&min_price=100&max_price=5000",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"lab-tests",
+								"advanced"
+							],
+							"query": [
+								{
+									"key": "search",
+									"value": "Blood"
+								},
+								{
+									"key": "category",
+									"value": "Blood Studies"
+								},
+								{
+									"key": "min_price",
+									"value": "100"
+								},
+								{
+									"key": "max_price",
+									"value": "5000"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Test by Slug (Test Code)",
+					"description": "Retrieve detailed information about a specific test using its slug/code.\n\n**Path Parameter:**\n- slug: Test slug (e.g., complete-blood-count-1)\n\n**Response:** Full test details including parameters, reference ranges, and pricing.",
+					"request": {
+						"method": "GET",
+						"url": {
+							"raw": "{{base_url}}/api/lab-tests/slug/complete-blood-count-1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"lab-tests",
+								"slug",
+								"complete-blood-count-1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Test by ID",
+					"description": "Retrieve test details by numeric ID.\n\n**Path Parameter:**\n- id: Test ID (numeric)\n\n**Response:** Full test details.",
+					"request": {
+						"method": "GET",
+						"url": {
+							"raw": "{{base_url}}/api/lab-tests/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"lab-tests",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Test Categories",
+					"description": "Retrieve all available test categories.\n\n**Response:** List of categories with category ID and name.",
+					"request": {
+						"method": "GET",
+						"url": {
+							"raw": "{{base_url}}/api/lab-tests/categories",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"lab-tests",
+								"categories"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "📅 Appointments & Bookings",
+			"description": "Booking management, appointment scheduling, and tracking endpoints.",
+			"item": [
+				{
+					"name": "Create Appointment",
+					"description": "Create a new lab test booking.\n\n**Headers:**\n- Authorization: Bearer {{patient_token}}\n\n**Body Fields:**\n- labTestId: ID of the test to book\n- bookingDate: Date in YYYY-MM-DD format\n- timeSlot: Time slot (e.g., 10:00 AM)\n- collectionType: HOME or LAB\n- discount: Discount percentage (0-100)\n- address: Address for home collection\n- pincode: PIN code for service area\n\n**Response:** Booking confirmation with booking ID and payment details.\n\n**Auto-Sets:**\n- created_booking_id: ID of the created booking",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 201\", function () {",
+									"    pm.response.to.have.status(201);",
+									"});",
+									"const jsonData = pm.response.json();",
+									"if (jsonData.success && jsonData.data.id) {",
+									"    pm.environment.set(\"created_booking_id\", jsonData.data.id);",
+									"    console.log('Booking ID saved:', jsonData.data.id);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{patient_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"labTestId\": 1,\n  \"bookingDate\": \"2026-05-01\",\n  \"timeSlot\": \"10:00 AM\",\n  \"collectionType\": \"HOME\",\n  \"discount\": 0,\n  \"address\": \"123 Main Street, New Delhi\",\n  \"pincode\": \"110001\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/api/bookings",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"bookings"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get My Bookings",
+					"description": "Retrieve all bookings for the authenticated user.\n\n**Headers:**\n- Authorization: Bearer {{patient_token}}\n\n**Response:** List of user's bookings with status, date, and test details.",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{patient_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/user-bookings",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"user-bookings"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Booking by ID",
+					"description": "Retrieve detailed information about a specific booking.\n\n**Headers:**\n- Authorization: Bearer {{patient_token}}\n\n**Path Parameter:**\n- id: Booking ID\n\n**Response:** Full booking details including test info, status, and payment status.",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{patient_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/bookings/{{created_booking_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"bookings",
+								"{{created_booking_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Track Booking Status",
+					"description": "Track the real-time status of a booking.\n\n**Headers:**\n- Authorization: Bearer {{patient_token}}\n\n**Path Parameter:**\n- id: Booking ID\n\n**Response:** Current status and timeline of the booking.",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{patient_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/bookings/{{created_booking_id}}/track",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"bookings",
+								"{{created_booking_id}}",
+								"track"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Cancel Booking",
+					"description": "Cancel a booking (if cancellable).\n\n**Headers:**\n- Authorization: Bearer {{patient_token}}\n\n**Path Parameter:**\n- id: Booking ID\n\n**Response:** Cancellation confirmation with refund details.",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{patient_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/bookings/{{created_booking_id}}/cancel",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"bookings",
+								"{{created_booking_id}}",
+								"cancel"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Reschedule Booking",
+					"description": "Reschedule an existing booking to a new date/time.\n\n**Headers:**\n- Authorization: Bearer {{patient_token}}\n\n**Body Fields:**\n- bookingDate: New date in YYYY-MM-DD format\n- timeSlot: New time slot",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{patient_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"bookingDate\": \"2026-05-02\",\n  \"timeSlot\": \"2:00 PM\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/api/bookings/{{created_booking_id}}/reschedule",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"bookings",
+								"{{created_booking_id}}",
+								"reschedule"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "📋 Diagnostic Reports",
+			"description": "Report generation, result submission, and report viewing endpoints.",
+			"item": [
+				{
+					"name": "Submit Test Results (Technician)",
+					"description": "Submit test results for a booking (Technician only).\n\n**Headers:**\n- Authorization: Bearer {{technician_token}}\n\n**Body Fields:**\n- bookingId: ID of the booking\n- results: Array of test results\n  - parameterId: Test parameter ID\n  - resultValue: Test result value\n  - status: NORMAL, ABNORMAL, or CRITICAL\n\n**Response:** Confirmation of result submission.",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{technician_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"bookingId\": {{created_booking_id}},\n  \"results\": [\n    {\n      \"parameterId\": 1,\n      \"resultValue\": \"14.5\",\n      \"status\": \"NORMAL\"\n    },\n    {\n      \"parameterId\": 2,\n      \"resultValue\": \"45\",\n      \"status\": \"NORMAL\"\n    }\n  ]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/api/reports/results",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"reports",
+								"results"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Final Report",
+					"description": "Retrieve the final report for a booking.\n\n**Headers:**\n- Authorization: Bearer {{patient_token}}\n\n**Path Parameter:**\n- id: Booking ID\n\n**Response:** Complete report with test results, reference ranges, and interpretation.",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{patient_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/reports/booking/{{created_booking_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"reports",
+								"booking",
+								"{{created_booking_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Download Report PDF",
+					"description": "Download the report as PDF document.\n\n**Headers:**\n- Authorization: Bearer {{patient_token}}\n\n**Path Parameter:**\n- id: Report ID\n\n**Response:** PDF file download.",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{patient_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/reports/{{created_booking_id}}/download",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"reports",
+								"{{created_booking_id}}",
+								"download"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Verify Report (Doctor)",
+					"description": "Verify and approve a report (Medical Officer only).\n\n**Headers:**\n- Authorization: Bearer {{doctor_token}}\n\n**Body Fields:**\n- reportId: ID of the report\n- verified: true/false\n- comments: Verification comments",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{doctor_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"reportId\": 1,\n  \"verified\": true,\n  \"comments\": \"Report verified by medical officer.\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/api/reports/verify",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"reports",
+								"verify"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get User Report History",
+					"description": "Retrieve all reports for the authenticated user.\n\n**Headers:**\n- Authorization: Bearer {{patient_token}}\n\n**Response:** List of user's reports with dates and status.",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{patient_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/reports/my-reports",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"reports",
+								"my-reports"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "💳 Payments",
+			"description": "Payment processing, refund management, and transaction history endpoints.",
+			"item": [
+				{
+					"name": "Initiate Payment",
+					"description": "Initiate payment for a booking.\n\n**Headers:**\n- Authorization: Bearer {{patient_token}}\n\n**Body Fields:**\n- bookingId: ID of the booking\n- paymentMethod: UPI, CARD, or NET_BANKING\n\n**Response:** Payment link or payment gateway details.",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{patient_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"bookingId\": {{created_booking_id}},\n  \"paymentMethod\": \"UPI\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/api/payments/initiate",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"payments",
+								"initiate"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Payment Status",
+					"description": "Check the status of a payment.\n\n**Headers:**\n- Authorization: Bearer {{patient_token}}\n\n**Path Parameter:**\n- id: Payment ID\n\n**Response:** Payment status (PENDING, COMPLETED, FAILED, REFUNDED).",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{patient_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/payments/1/status",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"payments",
+								"1",
+								"status"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Request Refund",
+					"description": "Request a refund for a payment.\n\n**Headers:**\n- Authorization: Bearer {{patient_token}}\n\n**Body Fields:**\n- paymentId: ID of the payment\n- reason: Reason for refund",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{patient_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"paymentId\": 1,\n  \"reason\": \"Test cancelled by user\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/api/payments/refund",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"payments",
+								"refund"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "👨‍⚕️ Admin & Technician",
+			"description": "Admin dashboard, technician management, and administrative operations.",
+			"item": [
+				{
+					"name": "Get All Bookings (Admin)",
+					"description": "Retrieve all bookings in the system (Admin only).\n\n**Headers:**\n- Authorization: Bearer {{admin_token}}\n\n**Response:** List of all bookings with user and test details.",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{admin_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/admin/bookings",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"admin",
+								"bookings"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Users (Admin)",
+					"description": "Retrieve all users in the system (Admin only).\n\n**Headers:**\n- Authorization: Bearer {{admin_token}}\n\n**Response:** List of all users with roles and status.",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{admin_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/admin/users",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"admin",
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Dashboard Stats (Admin)",
+					"description": "Retrieve dashboard statistics (Admin only).\n\n**Headers:**\n- Authorization: Bearer {{admin_token}}\n\n**Response:** Statistics including total bookings, revenue, active users, etc.",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{admin_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/admin/dashboard/stats",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"admin",
+								"dashboard",
+								"stats"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Assign Technician (Admin)",
+					"description": "Assign a technician to a booking (Admin only).\n\n**Headers:**\n- Authorization: Bearer {{admin_token}}\n\n**Body Fields:**\n- bookingId: ID of the booking\n- technicianId: ID of the technician",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{admin_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"bookingId\": {{created_booking_id}},\n  \"technicianId\": 1\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/api/admin/bookings/{{created_booking_id}}/assign-technician",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"admin",
+								"bookings",
+								"{{created_booking_id}}",
+								"assign-technician"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Technician Assignments (Technician)",
+					"description": "Get all bookings assigned to the authenticated technician.\n\n**Headers:**\n- Authorization: Bearer {{technician_token}}\n\n**Response:** List of assigned bookings with status and location.",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{technician_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/technician/my-assignments",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"technician",
+								"my-assignments"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Location (Technician)",
+					"description": "Update technician's current location.\n\n**Headers:**\n- Authorization: Bearer {{technician_token}}\n\n**Body Fields:**\n- latitude: Current latitude\n- longitude: Current longitude",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{technician_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"latitude\": 28.6139,\n  \"longitude\": 77.2090\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/api/technician/location",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"technician",
+								"location"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					"console.log('Executing Request: ' + pm.info.requestName);",
+					"console.log('Environment: ' + pm.environment.name);",
+					"console.log('Timestamp: ' + new Date().toISOString());"
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://localhost:8080",
+			"type": "string",
+			"description": "Base URL for the API"
+		}
+	]
+}

@@ -1,0 +1,154 @@
+{
+  "api": {
+    "baseUrl": "http://localhost:8080",
+    "jwtToken": "your-jwt-token-here",
+    "timeout": {
+      "connect": 5000,
+      "response": 30000
+    }
+  },
+  "test": {
+    "name": "Lab Test Booking API Load Test",
+    "description": "Load testing scenarios for Lab Test Booking REST API",
+    "duration": 300,
+    "rampUpTime": 30,
+    "resultsFile": "results.jtl",
+    "reportDirectory": "report"
+  },
+  "scenarios": [
+    {
+      "name": "Search Tests",
+      "description": "100 concurrent users searching for lab tests",
+      "enabled": true,
+      "users": 100,
+      "loopCount": 10,
+      "endpoints": [
+        {
+          "name": "Search Lab Tests",
+          "method": "GET",
+          "path": "/api/lab-tests/search",
+          "parameters": [
+            {
+              "name": "search",
+              "value": "blood"
+            },
+            {
+              "name": "page",
+              "value": "${__Random(0,5)}"
+            }
+          ],
+          "expectedStatusCode": 200,
+          "thinkTime": 500
+        },
+        {
+          "name": "Get All Lab Tests",
+          "method": "GET",
+          "path": "/api/lab-tests",
+          "parameters": [
+            {
+              "name": "page",
+              "value": "${__Random(0,5)}"
+            }
+          ],
+          "expectedStatusCode": 200,
+          "thinkTime": 500
+        }
+      ]
+    },
+    {
+      "name": "Create Bookings",
+      "description": "50 concurrent users creating booking reservations",
+      "enabled": true,
+      "users": 50,
+      "loopCount": 5,
+      "endpoints": [
+        {
+          "name": "Create Booking",
+          "method": "POST",
+          "path": "/api/bookings",
+          "contentType": "application/json",
+          "body": {
+            "labTestId": "${__Random(1,10)}",
+            "bookingDate": "${__time(yyyy-MM-dd'T'HH:mm:ss)}",
+            "slotTime": "09:00 AM",
+            "labPartnerId": "${__Random(1,5)}",
+            "addressType": "HOME"
+          },
+          "expectedStatusCode": 201,
+          "extractors": [
+            {
+              "name": "BOOKING_ID",
+              "type": "regex",
+              "pattern": "\"id\":(\\d+)"
+            }
+          ],
+          "thinkTime": 1000
+        }
+      ]
+    },
+    {
+      "name": "Download Reports",
+      "description": "20 concurrent users downloading PDF reports",
+      "enabled": true,
+      "users": 20,
+      "loopCount": 8,
+      "endpoints": [
+        {
+          "name": "Download Report PDF",
+          "method": "GET",
+          "path": "/api/reports/${__Random(1,100)}/pdf",
+          "headers": {
+            "Accept": "application/pdf"
+          },
+          "expectedStatusCode": 200,
+          "expectedContentType": "application/pdf",
+          "thinkTime": 2000
+        }
+      ]
+    }
+  ],
+  "assertions": [
+    {
+      "type": "responseTime",
+      "operator": "lessThan",
+      "value": 5000,
+      "scope": "all"
+    },
+    {
+      "type": "responseCode",
+      "operator": "matches",
+      "value": "2\\d\\d",
+      "scope": "all"
+    }
+  ],
+  "performance_targets": {
+    "search": {
+      "avgResponseTime": 200,
+      "p95ResponseTime": 500,
+      "p99ResponseTime": 1000,
+      "throughput": 300,
+      "errorRate": 0.5
+    },
+    "booking": {
+      "avgResponseTime": 250,
+      "p95ResponseTime": 600,
+      "p99ResponseTime": 1200,
+      "throughput": 150,
+      "errorRate": 0.5
+    },
+    "report": {
+      "avgResponseTime": 420,
+      "p95ResponseTime": 800,
+      "p99ResponseTime": 1800,
+      "throughput": 60,
+      "errorRate": 0.5
+    }
+  },
+  "monitoring": {
+    "cpuThreshold": 80,
+    "memoryThreshold": 80,
+    "diskThreshold": 90,
+    "responseTimeWarning": 1000,
+    "errorRateWarning": 1
+  }
+}
